@@ -49,6 +49,7 @@ struct ContentView: View {
   private func previewItemView() -> some View {
     Color.clear
       .contentShape(.dragPreview, Circle())
+      .frame(width: 1, height: 1)
   }
   
   // MARK: - ResetView
