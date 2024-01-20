@@ -21,6 +21,8 @@ struct ContentView: View {
     }
   }
   
+  // MARK: - DragView
+  
   var dragView: some View {
     VStack {
       ForEach(records, id: \.self) { item in
@@ -28,17 +30,28 @@ struct ContentView: View {
           .padding()
           .frame(maxWidth: .infinity)
           .background(Color.blue.opacity(0.2), in: Capsule())
-          .onDrag({
-            self.draggedItem = item
-            return .init()
-            
-          }, preview: {  })
+          .contentShape(.dragPreview, Capsule())
+          .onDrag({ onDragView(item) }, preview: previewItemView)
           .onDrop(
             of: [.text],
             delegate: DropViewDelegate(destinationItem: item, items: $records, draggedItem: $draggedItem))
       }
     }
   }
+  
+  private func onDragView(_ item: String) -> NSItemProvider {
+    self.draggedItem = item
+    return .init()
+  }
+  
+  // MARK: - Drag Preview
+  
+  private func previewItemView() -> some View {
+    Color.clear
+      .contentShape(.dragPreview, Circle())
+  }
+  
+  // MARK: - ResetView
   
   @ToolbarContentBuilder
   private func resetView() -> some ToolbarContent {
@@ -50,7 +63,7 @@ struct ContentView: View {
   }
 }
 
-
+// MARK: - Preview
 
 #Preview {
   ContentView()
